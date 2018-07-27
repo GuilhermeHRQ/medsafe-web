@@ -14,6 +14,6 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.titleService.setTitle('Home');
-        this.toolbarService.set('MedSafe - Home');
+        this.toolbarService.set('MedUP - Home');
     }
 }

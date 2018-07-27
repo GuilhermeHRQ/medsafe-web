@@ -6,8 +6,8 @@
 export const environment = {
     production: false,
     // Sistema
-    SYSTEM_PREFIX: 'medsafe', // Prefixo para indentificar o sistema, usado nos cookies,
+    SYSTEM_PREFIX: 'medup', // Prefixo para indentificar o sistema, usado nos cookies,
     // SMN Auth
-    AUTH_API: 'http://localhost:4200', // API do auth
-    AUTH_BY_EMAIL: true // O sistema faz o login atráves do e-mail
+    AUTH_API: 'http://localhost:9500', // API do auth
+    // AUTH_BY_EMAIL: true // O sistema faz o login atráves do e-mail
 };

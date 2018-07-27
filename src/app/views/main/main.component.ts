@@ -35,7 +35,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.titleService.setTitle('UnifaSystem');
+        this.titleService.setTitle('MedUP');
         this.toolbarService.set('');
         this.menuOpen = false;
         this.toolbarService.registerMainToolbar(document.getElementById('app-header'));

@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { UiColor, UiSnackbar } from 'ng-smn-ui';
-import { ApiService } from '../../../core/api/api.service';
-import { environment } from '../../../../environments/environment';
-import { UserService } from '../../../core/utils/user/user.service';
-import { Router } from '@angular/router';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Title} from '@angular/platform-browser';
+import {UiColor, UiSnackbar} from 'ng-smn-ui';
+import {ApiService} from '../../../core/api/api.service';
+import {environment} from '../../../../environments/environment';
+import {UserService} from '../../../core/utils/user/user.service';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-login',
@@ -26,23 +26,22 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
 
     constructor(private titleService: Title,
-        private router: Router,
-        private element: ElementRef,
-        private api: ApiService) {
+                private router: Router,
+                private element: ElementRef,
+                private api: ApiService) {
         this.preLogin = {};
         this.info = {
             matenhaConectado: true
         };
         this.senhaExpirada = {};
-        this.authByEmail = environment.AUTH_BY_EMAIL;
     }
 
     ngOnInit() {
-        this.headers = { 'Content-Type': 'application/json' };
+        this.headers = {'Content-Type': 'application/json'};
     }
 
     ngAfterViewInit() {
-        this.titleService.setTitle('Cronos - Login');
+        this.titleService.setTitle('MedUP - Login');
     }
 
     isBright(color: string) {
@@ -50,8 +49,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
 
     getInfo(form, info) {
-        console.log(info);
-
         if (form.invalid || this.loading) {
             form.controls.usuario.markAsTouched();
             form.controls.usuario.markAsDirty();
@@ -61,8 +58,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
         this.loading = true;
         this.api
-            .http('POST', `${environment.AUTH_API}/login/dados`, { headers: this.headers })
-            .call({ login: info.usuario })
+            .http('POST', `${environment.AUTH_API}/login/dados`, {headers: this.headers})
+            .call({login: info.usuario})
             .subscribe(res => {
                 res.content.user = Object.assign(res.content.user, {
                     usuario: info.usuario,
@@ -74,9 +71,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.focusElement('#login-senha', true);
                 this.loginForm.reset();
             }, (res) => {
-                switch (res._status) {
+                switch (res.status) {
                     case 404:
-                        form.controls.usuario.setErrors({ notFound: true });
+                        form.controls.usuario.setErrors({notFound: true});
                         break;
                 }
             }, () => {
@@ -98,8 +95,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.loading = true;
 
         this.api
-            .http('POST', `${environment.AUTH_API}/login`, { headers: this.headers })
-            .call({ login: info.usuario, senha: info.senha })
+            .http('POST', `${environment.AUTH_API}/login`, {headers: this.headers})
+            .call({login: info.usuario, senha: info.senha})
             .subscribe(res => {
                 const content = res.content;
                 this.api.set(content.api, content.opcoes);
@@ -112,21 +109,27 @@ export class LoginComponent implements OnInit, AfterViewInit {
                     case 401:
                         switch (res.error.executionCode) {
                             case 2:
-                                form.controls.senha.setErrors({ wrongPassword: true });
+                                form.controls.senha.setErrors({wrongPassword: true});
                                 elementPassword.focus();
                                 break;
                             case 3:
+                                this.tabsPages.pagesGoToPage(1);
+                                UiSnackbar.show({
+                                    text: 'Usuário bloqueado ou inativo'
+                                });
+                                break;
+                            case 4:
                                 this.tabsPages.pagesGoToPage(3);
                                 form.reset();
                                 break;
-                            case 4:
+                            case 5:
                                 this.senhaExpirada = Object.assign({}, info);
                                 delete this.senhaExpirada.senha;
                                 this.focusElement('#senha-antiga', true);
                                 this.tabsPages.pagesGoToPage(5);
                                 form.reset();
                                 break;
-                            case 5:
+                            case 6:
                                 this.tabsPages.pagesGoToPage(4);
                                 form.reset();
                                 break;
@@ -151,7 +154,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.loading = true;
 
         this.api
-            .http('POST', `${environment.AUTH_API}/login/alterar-senha`, { headers: this.headers })
+            .http('POST', `${environment.AUTH_API}/login/alterar-senha`, {headers: this.headers})
             .call({
                 login: info.usuario,
                 senha: info.senha,
@@ -170,7 +173,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
                         this.validarSenhasDivergentes(form);
                         break;
                     case 401:
-                        form.controls.senhaAntiga.setErrors({ wrongPassword: true });
+                        form.controls.senhaAntiga.setErrors({wrongPassword: true});
                         this.focusElement('#senha-antiga');
                         break;
                     case 404:
@@ -192,7 +195,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     validarSenhasDivergentes(form) {
         if (this.senhaExpirada.novaSenha !== this.senhaExpirada.confirmacaoNovaSenha) {
-            setTimeout(() => form.controls.confirmacaoSenha.setErrors({ notEqual: true }));
+            setTimeout(() => form.controls.confirmacaoSenha.setErrors({notEqual: true}));
         }
     }
 
